@@ -1,0 +1,37 @@
+*neoconfig*
+
+neoconfig.nvim	Quick loader for keymaps, commands, functions, and autocmds
+
+SYNOPSIS
+    Use `require('neoconfig').setup(opts)` to declaratively create mappings,
+    user commands, and autocmds from a table.
+
+USAGE
+	Provide a table (or a function returning a table) with the following top-level keys:
+	- `keymaps`  : list of keymap entries
+	- `commands` : list of user command entries
+	- `funcs`    : list of named Lua functions (validated at setup)
+	- `autocmds` : list of autocmd/augroup entries
+	- `defaults` : optional defaults merged into each item
+
+EXAMPLE (Lazy.nvim)
+	Use `opts` and an explicit `config` function in your Lazy spec:
+
+	local spec = {
+	  'jemjam/neoconfig.nvim',
+	  opts = {
+	    defaults = { keymaps = { silent = true, noremap = true } },
+	    keymaps = {
+	      { lhs = '<leader>ff', rhs = ':Telescope find_files<CR>', mode = 'n', desc = 'Find files' },
+	    },
+	    commands = {
+	      { name = 'SayHello', handler = function() print('hello') end, opts = { desc = 'Say hello' } },
+	    },
+	  },
+	  config = function(_, opts) require('neoconfig').setup(opts) end,
+	}
+
+	Place this in your Lazy setup to have `neoconfig` process the `opts` table at startup.
+
+HELP
+	For more details, refer to the README or the module source under `lua/neoconfig`.
