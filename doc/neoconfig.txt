@@ -2,21 +2,27 @@
 
 neoconfig.nvim	Quick loader for keymaps, commands, functions, and autocmds
 
-SYNOPSIS
-    Use `require('neoconfig').setup(opts)` to declaratively create mappings,
-    user commands, and autocmds from a table.
+NAME
+	neoconfig - lightweight declarative loader for Neovim config items
 
-USAGE
-	Provide a table (or a function returning a table) with the following top-level keys:
-	- `keymaps`  : list of keymap entries
+SYNOPSIS
+	Use `:lua require('neoconfig').setup(opts)` or call from your plugin manager's `config`.
+
+DESCRIPTION
+	`neoconfig` accepts a single table (or a function that returns a table) and
+	creates keymaps, user commands, autocmds, and validates simple named Lua
+	functions. It's intentionally minimal and has no UI or external dependencies.
+
+TOP-LEVEL FIELDS
+	- `keymaps`  : list of keymap entries (see examples)
 	- `commands` : list of user command entries
 	- `funcs`    : list of named Lua functions (validated at setup)
-	- `autocmds` : list of autocmd/augroup entries
-	- `defaults` : optional defaults merged into each item
+	- `autocmds` : list of autocmd definitions
+	- `defaults` : per-kind defaults merged into each item (optional)
 
-EXAMPLE (Lazy.nvim)
-	Use `opts` and an explicit `config` function in your Lazy spec:
+EXAMPLES
 
+Lazy.nvim (recommended pattern)
 	local spec = {
 	  'jemjam/neoconfig.nvim',
 	  opts = {
@@ -31,7 +37,25 @@ EXAMPLE (Lazy.nvim)
 	  config = function(_, opts) require('neoconfig').setup(opts) end,
 	}
 
-	Place this in your Lazy setup to have `neoconfig` process the `opts` table at startup.
+Direct require usage
+	require('neoconfig').setup({
+	  keymaps = {
+	    { lhs = '<leader>p', rhs = ':Telescope live_grep<CR>', mode = {'n','v'}, desc = 'Live grep' },
+	  },
+	  autocmds = {
+	    { events = 'BufWritePre', pattern = '*', callback = function() vim.lsp.buf.format() end, opts = { once = false } },
+	  },
+	})
 
-HELP
-	For more details, refer to the README or the module source under `lua/neoconfig`.
+NOTES
+	- `setup` accepts either a table or a function returning the table.
+	- Duplicate keymaps (same mode + lhs) or duplicate command/func names will raise an error.
+	- This module does not expose functions globally — it only validates and registers
+	  the provided definitions with Neovim.
+
+FILES
+	- Lua module: `lua/neoconfig/init.lua`
+	- Types (EmmyLua): `lua/neoconfig/types.lua`
+
+SEE ALSO
+	See the project README for additional examples.
