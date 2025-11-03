@@ -1,8 +1,11 @@
--- Direct require usage example
-require('neoconfig').setup({
+-- Example opts table you can pass to your plugin manager (preferred)
+-- Use the `opts = { ... }` form when loading the plugin; keymaps must be
+-- provided in vim.keymap.set array form: { mode, lhs, rhs, opts }
+
+return {
   defaults = { keymaps = { silent = true, noremap = true } },
   keymaps = {
-    { lhs = '<leader>t', rhs = ':Telescope treesitter<CR>', mode = 'n', desc = 'Treesitter' },
+    { 'n', '<leader>t', ':Telescope treesitter<CR>', { desc = 'Treesitter' } },
   },
   commands = {
     { name = 'Greet', handler = function() print('Hello from Greet') end, opts = { desc = 'Greet' } },
@@ -13,4 +16,4 @@ require('neoconfig').setup({
   funcs = {
     { name = 'DoNothing', fn = function() end },
   },
-})
+}

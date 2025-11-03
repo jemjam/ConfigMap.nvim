@@ -2,11 +2,9 @@
 --- These are lightweight annotations to help editor completion.
 
 ---@class NCKeymap
----@field lhs string
----@field rhs string|fun()
----@field mode string|string[]|nil
----@field desc string|nil
----@field opts table|nil
+--- Keymap entries must be provided in the same form as `vim.keymap.set`:
+--- an array `{ mode, lhs, rhs, opts }`. `mode` may be a string or table.
+---@field _array table
 
 ---@class NCCommand
 ---@field name string

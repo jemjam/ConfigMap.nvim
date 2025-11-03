@@ -22,30 +22,27 @@ TOP-LEVEL FIELDS
 
 EXAMPLES
 
-Lazy.nvim (recommended pattern)
-	local spec = {
-	  'jemjam/neoconfig.nvim',
-	  opts = {
-	    defaults = { keymaps = { silent = true, noremap = true } },
-	    keymaps = {
-	      { lhs = '<leader>ff', rhs = ':Telescope find_files<CR>', mode = 'n', desc = 'Find files' },
-	    },
-	    commands = {
-	      { name = 'SayHello', handler = function() print('hello') end, opts = { desc = 'Say hello' } },
-	    },
-	  },
-	  config = function(_, opts) require('neoconfig').setup(opts) end,
-	}
+SETTING HOTKEYS
+	Always provide keymaps via the plugin-manager `opts = { ... }` table and
+	use the same array form as `vim.keymap.set`.
+	Example Lazy.nvim spec:
+		local spec = {
+		  'jemjam/neoconfig.nvim',
+		  opts = {
+			defaults = { keymaps = { silent = true, noremap = true } },
+			keymaps = {
+			  { 'n', '<leader>ff', ':Telescope find_files<CR>', { desc = 'Find files', silent = true } },
+			  { {'n','v'}, '<leader>p', ':Telescope live_grep<CR>', { desc = 'Live grep' } },
+			},
+			commands = {
+			  { name = 'SayHello', handler = function() print('hello') end, opts = { desc = 'Say hello' } },
+			},
+		  },
+		  config = function(_, opts) require('neoconfig').setup(opts) end,
+		}
 
-Direct require usage
-	require('neoconfig').setup({
-	  keymaps = {
-	    { lhs = '<leader>p', rhs = ':Telescope live_grep<CR>', mode = {'n','v'}, desc = 'Live grep' },
-	  },
-	  autocmds = {
-	    { events = 'BufWritePre', pattern = '*', callback = function() vim.lsp.buf.format() end, opts = { once = false } },
-	  },
-	})
+	This is the recommended and preferred usage pattern; direct `require(...).setup()` calls
+	are discouraged to avoid duplication of plugin manager configuration.
 
 NOTES
 	- `setup` accepts either a table or a function returning the table.

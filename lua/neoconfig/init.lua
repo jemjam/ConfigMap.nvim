@@ -39,26 +39,25 @@ end
 local function apply_keymaps(list, defaults)
 	local seen = {}
 	for _, item in ipairs(resolve_list(list)) do
+		-- require array form: { mode, lhs, rhs, opts }
 		if type(item) ~= "table" then
-			error("neoconfig: keymap entry must be a table")
-		end
-		local lhs = item.lhs
-		local rhs = item.rhs
-		if not lhs or not rhs then
-			error("neoconfig: keymap entry requires 'lhs' and 'rhs'")
+			error("neoconfig: keymap entry must be a table in vim.keymap.set form: {mode, lhs, rhs, opts}")
 		end
 
-		local mode = item.mode or "n"
+		local mode = item[1]
+		local lhs = item[2]
+		local rhs = item[3]
+		local opts = item[4]
+		if not mode or not lhs or not rhs then
+			error("neoconfig: keymap entry requires mode, lhs and rhs (array form)")
+		end
+
 		local modes = type(mode) == "table" and mode or { mode }
-
-		local opts = merge_opts(defaults, item.opts)
-		if item.desc and not opts.desc then
-			opts.desc = item.desc
-		end
+		local merged_opts = merge_opts(defaults, opts)
 
 		-- normalize buffer boolean -> 0 (current buffer)
-		if opts.buffer == true then
-			opts.buffer = 0
+		if merged_opts.buffer == true then
+			merged_opts.buffer = 0
 		end
 
 		-- duplicate detection per-mode
@@ -71,7 +70,7 @@ local function apply_keymaps(list, defaults)
 		end
 
 		-- use vim.keymap.set which accepts string or table of modes
-		vim.keymap.set(modes, lhs, rhs, opts)
+		vim.keymap.set(modes, lhs, rhs, merged_opts)
 	end
 end
 

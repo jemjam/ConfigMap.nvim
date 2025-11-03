@@ -70,9 +70,9 @@ Phase 4 — Polish & Release
   - `autocmds` = array of Autocmd entries
   - `defaults` = table with per-kind defaults e.g. `{ keymaps = { silent = true, noremap = true } }`
 
-Keymap entry (example):
+Keymap entry (example, `vim.keymap.set` array form):
 ```
-{ lhs = '<leader>ff', rhs = ':Telescope find_files<CR>', mode = 'n', desc = 'Find files', opts = { silent = true } }
+{ 'n', '<leader>ff', ':Telescope find_files<CR>', { desc = 'Find files', silent = true } }
 ```
 Command entry (example):
 ```
@@ -93,7 +93,7 @@ Notes: `funcs` are simply registered/validated at setup time; no global exposure
 
 - Manual test plan (quick):
   1. Use a local Neovim instance and a minimal `init.lua` requiring this module.
-  2. Provide `opts` via a `lazy.nvim`-style spec or call `require('neoconfig').setup({ ... })` interactively.
+  2. Provide `opts` via a `lazy.nvim`-style spec (preferred) or pass the same `opts` table to `require('neoconfig').setup(opts)` if used directly.
   3. Verify mappings, commands, and autocmds exist using `:map`, `:command`, and `:au`.
 - Automated tests: add tests for `normalize_config` and helpers; mock Neovim APIs if necessary.
 
