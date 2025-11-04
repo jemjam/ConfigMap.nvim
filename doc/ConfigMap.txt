@@ -1,3 +1,5 @@
+	*ConfigMap.txt*	{Helper for loading user commands, keymaps, etc}
+
 *ConfigMap*
 
 ConfigMap.nvim	Quick loader for keymaps, commands, functions, and autocmds
@@ -6,12 +8,14 @@ NAME
 	ConfigMap - lightweight declarative loader for Neovim config items
 
 SYNOPSIS
-	Use `:lua require('ConfigMap').setup(opts)` or call from your plugin manager's `config`.
+        Use `:lua require('ConfigMap').setup(opts)` or call from your plugin
+        manager's `config`.
 
 DESCRIPTION
-	`ConfigMap` accepts a single table (or a function that returns a table) and
-	creates keymaps, user commands, autocmds, and validates simple named Lua
-	functions. It's intentionally minimal and has no UI or external dependencies.
+        `ConfigMap` accepts a single table (or a function that returns a
+        table) and creates keymaps, user commands, autocmds, and validates
+        simple named Lua functions. It's intentionally minimal and has no UI
+        or external dependencies.
 
 TOP-LEVEL FIELDS
 	- `keymaps`  : list of keymap entries (see examples)
@@ -22,20 +26,20 @@ TOP-LEVEL FIELDS
 
 EXAMPLES
 
-SETTING KEYMAPS
-    For more information about key mapping, see `:h 40.1`
+SETTING KEYMAPS                                     *ConfigMap-keymaps*
+    For more information about key mapping, see |usr_40.txt| and |40.1|.
 
-	Keymaps are configured as tables with positional lhs and rhs, and optional
-	desc and mode fields. The mode defaults to "n" if not specified.
+    Keymaps are configured as tables with positional lhs and rhs, and optional
+    desc and mode fields. The mode defaults to "n" if not specified.
 
-	Basic keymap:
-		{ '<leader>ff', ':Telescope find_files<CR>', desc = 'Find files' }
+    Basic keymap:
+            { '<leader>ff', ':Telescope find_files<CR>', desc = 'Find files' }
 
-	Keymap with multiple modes:
-		{ '<leader>p', ':Telescope live_grep<CR>', desc = 'Live grep', mode = {'n','v'} }
+    Keymap with multiple modes:
+            { '<leader>p', ':Telescope live_grep<CR>', desc = 'Live grep', mode = {'n','v'} }
 
-	Keymap without description:
-		{ '<leader>q', ':q<CR>' }
+    Keymap without description:
+            { '<leader>q', ':q<CR>' }
 
 SETTING HOTKEYS
 	Always provide keymaps via the plugin-manager `opts = { ... }` table.
@@ -66,3 +70,5 @@ FILES
 
 SEE ALSO
 	See the project README for additional examples.
+
+vim:tw=78:ts=8:ft=help:norl:
