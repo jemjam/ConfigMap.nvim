@@ -22,17 +22,29 @@ TOP-LEVEL FIELDS
 
 EXAMPLES
 
+SETTING KEYMAPS
+	Keymaps are configured as tables with positional lhs and rhs, and optional
+	desc and mode fields. The mode defaults to "n" if not specified.
+
+	Basic keymap:
+		{ '<leader>ff', ':Telescope find_files<CR>', desc = 'Find files' }
+
+	Keymap with multiple modes:
+		{ '<leader>p', ':Telescope live_grep<CR>', desc = 'Live grep', mode = {'n','v'} }
+
+	Keymap without description:
+		{ '<leader>q', ':q<CR>' }
+
 SETTING HOTKEYS
-	Always provide keymaps via the plugin-manager `opts = { ... }` table and
-	use the same array form as `vim.keymap.set`.
+	Always provide keymaps via the plugin-manager `opts = { ... }` table.
 	Example Lazy.nvim spec:
 		local spec = {
 		  'jemjam/ConfigMap.nvim',
 		  opts = {
 			defaults = { keymaps = { silent = true, noremap = true } },
 			keymaps = {
-			  { 'n', '<leader>ff', ':Telescope find_files<CR>', { desc = 'Find files', silent = true } },
-			  { {'n','v'}, '<leader>p', ':Telescope live_grep<CR>', { desc = 'Live grep' } },
+			  { '<leader>ff', ':Telescope find_files<CR>', desc = 'Find files' },
+			  { '<leader>p', ':Telescope live_grep<CR>', desc = 'Live grep', mode = {'n','v'} },
 			},
 			commands = {
 			  { name = 'SayHello', handler = function() print('hello') end, opts = { desc = 'Say hello' } },

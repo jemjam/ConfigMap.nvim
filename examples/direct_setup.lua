@@ -1,11 +1,11 @@
 -- Example opts table you can pass to your plugin manager (preferred)
--- Use the `opts = { ... }` form when loading the plugin; keymaps must be
--- provided in vim.keymap.set array form: { mode, lhs, rhs, opts }
+-- Use the `opts = { ... }` form when loading the plugin; keymaps are
+-- provided as tables: {lhs, rhs, desc?, mode?}
 
 return {
   defaults = { keymaps = { silent = true, noremap = true } },
   keymaps = {
-    { 'n', '<leader>t', ':Telescope treesitter<CR>', { desc = 'Treesitter' } },
+    { '<leader>t', ':Telescope treesitter<CR>', desc = 'Treesitter' },
   },
   commands = {
     { name = 'Greet', handler = function() print('Hello from Greet') end, opts = { desc = 'Greet' } },

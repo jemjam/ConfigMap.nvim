@@ -14,7 +14,7 @@ Quick Lazy.nvim example:
   opts = {
     defaults = { keymaps = { silent = true, noremap = true } },
     keymaps = {
-      { 'n', '<leader>ff', ':Telescope find_files<CR>', { desc = 'Find files', silent = true } },
+      { '<leader>ff', ':Telescope find_files<CR>', desc = 'Find files' },
     },
     commands = {
       { name = 'SayHello', handler = function() print('hello') end, opts = { desc = 'Say hello' } },

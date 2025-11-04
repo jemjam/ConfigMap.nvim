@@ -11,12 +11,12 @@
 ---@field replace_keycodes boolean|nil
 
 ---@class NCKeymap
---- Keymap entries must be provided in the same form as `vim.keymap.set`:
---- an array `{ mode, lhs, rhs, opts }`. `mode` may be a string or table.
----@field [1] string|string[] mode
----@field [2] string lhs
----@field [3] string|fun() rhs
----@field [4] NCKeymapOpts|nil opts
+--- Keymap entries are provided as a table: {lhs, rhs, desc?, mode?}.
+--- `mode` may be a string or table, defaults to "n" if not specified.
+---@field [1] string lhs
+---@field [2] string|fun() rhs
+---@field desc string|nil
+---@field mode string|string[]|nil
 
 ---@class NCCommand
 ---@field name string

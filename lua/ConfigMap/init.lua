@@ -32,20 +32,23 @@ end
 local function apply_keymaps(list, defaults)
 	local seen = {}
 	for _, item in ipairs(resolve_list(list)) do
-		-- require array form: { mode, lhs, rhs, opts }
 		if type(item) ~= "table" then
-			error("ConfigMap: keymap entry must be a table in vim.keymap.set form: {mode, lhs, rhs, opts}")
+			error("ConfigMap: keymap entry must be a table: {lhs, rhs, desc?, mode?}")
 		end
 
-		local mode = item[1]
-		local lhs = item[2]
-		local rhs = item[3]
-		local opts = item[4]
-		if not mode or not lhs or not rhs then
-			error("ConfigMap: keymap entry requires mode, lhs and rhs (array form)")
+		local lhs = item[1]
+		local rhs = item[2]
+		local desc = item.desc
+		local mode = item.mode or "n"
+		if not lhs or not rhs then
+			error("ConfigMap: keymap entry requires lhs and rhs as first two elements")
 		end
 
 		local modes = type(mode) == "table" and mode or { mode }
+		local opts = {}
+		if desc then
+			opts.desc = desc
+		end
 		local merged_opts = merge_opts(defaults, opts)
 
 		-- normalize buffer boolean -> 0 (current buffer)
