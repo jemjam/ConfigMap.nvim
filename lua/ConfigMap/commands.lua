@@ -12,6 +12,7 @@ function M.apply_commands(list)
 		if not name then
 			error("ConfigMap: command entry requires first argument for 'name'")
 		end
+		name = name:gsub("^:", "")
 		if seen[name] then
 			error("ConfigMap: duplicate command name: " .. name)
 		end
