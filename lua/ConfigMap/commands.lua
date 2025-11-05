@@ -1,0 +1,31 @@
+local utils = require("ConfigMap.utils")
+
+local M = {}
+
+function M.apply_commands(list, defaults)
+	local seen = {}
+	for _, item in ipairs(utils.resolve_list(list)) do
+		if type(item) ~= "table" then
+			error("ConfigMap: command entry must be a table")
+		end
+		local name = item[1]
+		if not name then
+			error("ConfigMap: command entry requires first argument for 'name'")
+		end
+		if seen[name] then
+			error("ConfigMap: duplicate command name: " .. name)
+		end
+		seen[name] = true
+
+		local opts = utils.merge_opts(defaults, item.opts)
+		local handler = item[2]
+		if not handler then
+			error("ConfigMap: command '" .. name .. "' requires a handler (string or function)")
+		end
+
+		-- nvim_create_user_command accepts either a string (ex command) or a Lua function
+		vim.api.nvim_create_user_command(name, handler, opts)
+	end
+end
+
+return M
