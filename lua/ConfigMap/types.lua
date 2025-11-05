@@ -9,9 +9,23 @@
 ---@field desc string|nil
 ---@field mode string|string[]|nil
 
+---@class NCCommandArgs
+---@field name string Command name
+---@field args string The args passed to the command, if any
+---@field fargs table The args split by unescaped whitespace
+---@field nargs string Number of arguments
+---@field bang boolean "true" if the command was executed with a ! modifier
+---@field line1 number The starting line of the command range
+---@field line2 number The final line of the command range
+---@field range number The number of items in the command range: 0, 1, or 2
+---@field count number Any count supplied
+---@field reg string The optional register, if specified
+---@field mods string Command modifiers, if any
+---@field smods table Command modifiers in a structured format
+
 ---@class NCCommand
 ---@field [1] string name -- user commands must be capitalized
----@field [2] string|fun() -- Command to execute, or a fn
+---@field [2] string|fun(args: NCCommandArgs) -- Command to execute, or a fn
 ---@field opts table|nil -- Additional opts to pass
 
 ---@class NCFunc
