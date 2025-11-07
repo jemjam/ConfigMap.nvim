@@ -18,53 +18,276 @@ DESCRIPTION
         table) and creates keymaps, user commands, and autocmds. It's
         intentionally minimal and has no UI or external dependencies.
 
-TOP-LEVEL FIELDS
-	- `keymaps`  : list of keymap entries (see examples)
-	- `commands` : list of user command entries
-	- `autocmds` : list of autocmd definitions (currently untested)
+=============================================================================
+INSTALLATION						*settable-installation*
+
+Include the plugin using your plugin manager of choice:
+
+Lazy.nvim example:
+>lua
+    {
+        "jemjam/settable.nvim",
+        opts = {
+            keymaps = { ... },
+            commands = { ... },
+            autocmds = { ... },
+        },
+    }
+<
+
+Packer example:
+>lua
+    use {
+        'jemjam/settable.nvim',
+        config = function()
+            require('settable').setup {
+                keymaps = { ... },
+                commands = { ... },
+                autocmds = { ... },
+            }
+        end
+    }
+<
+
+Function-based configuration is also supported:
+>lua
+    require('settable').setup(function()
+        return {
+            keymaps = { ... },
+            commands = { ... },
+            autocmds = { ... },
+        }
+    end)
+<
+
+=============================================================================
+CONFIGURATION OVERVIEW				       *settable-configuration*
+
+The main configuration table accepts three top-level fields:
+
+>lua
+    {
+        keymaps = {},   -- list of keymap entries
+        commands = {},  -- list of user command entries  
+        autocmds = {},  -- list of autocmd definitions
+    }
+<
+
+Each field accepts either:
+- A table of entries (arrays or objects)
+- A function that returns such a table
+
+=============================================================================
+KEYMAPS	                                                     *settable-keymaps*
+
+For more information about key mapping, see |usr_40.txt| and |40.1|,
+and specifically |vim.keymap.set()| for the underlying API.
+
+TABLE STRUCTURE
+Keymaps are defined as tables with positional arguments:
+- [1] lhs (string): The key sequence that triggers the mapping
+- [2] rhs (string|function): What gets executed when triggered
+- Additional fields are passed as options to |vim.keymap.set()|
+
+TYPE PROPERTIES
+>lua
+    {
+        [1] string,              -- lhs: key sequence (required)
+        [2] string|fun(),        -- rhs: command or function (required)
+        mode = string|string[],  -- Mode(s): "n", "v", "i", etc. (default: "n")
+        desc = string,           -- Human-readable description
+        noremap = boolean,       -- Disable recursive mapping
+        silent = boolean,        -- Suppress output during mapping
+        expr = boolean,          -- Enable expression mappings
+        remap = boolean,         -- Allow remapping to previous keys
+        nowait = boolean,        -- Don't wait for multi-key sequences
+        script = boolean,        -- Script mapping behavior
+        replace_keycodes = boolean,  -- Keycode replacement for expr mappings
+        buffer = boolean|number, -- Buffer-local mapping (true = current buffer)
+    }
+<
 
 EXAMPLES
-
-SETTING KEYMAPS                                         *settable-keymaps*
-    For more information about key mapping, see |usr_40.txt| and |40.1|.
-
-    Keymaps are configured as tables with positional lhs and rhs. You can also
-    include desc and mode fields. The mode defaults to "n" if not specified.
+Basic keymap:
 >lua
-    Basic keymap:
-        { '<leader>ff', ':Telescope find_files<CR>', desc = 'Find files' }
+    { '<leader>ff', ':Telescope find_files<CR>', desc = 'Find files' }
+<
 
-    Keymap with multiple modes:
-        { 
-            '<leader>p', 
-            ':Telescope live_grep<CR>', 
-            desc = 'Live grep', 
-            mode = {'n','v'} 
+Keymap with multiple modes:
+>lua
+    { 
+        '<leader>p', 
+        ':Telescope live_grep<CR>', 
+        desc = 'Live grep', 
+        mode = {'n','v'} 
+    }
+<
+
+Function-based rhs:
+>lua
+    { '<leader>q', function() vim.cmd('quit') end, desc = 'Quit' }
+<
+
+Buffer-local mapping:
+>lua
+    { '<leader>b', ':ls<CR>', desc = 'List buffers', buffer = true }
+<
+
+VALIDATION
+- Duplicate keymaps (same mode + lhs combination) will raise an error
+- Both lhs and rhs are required
+- Mode defaults to "n" if not specified
+
+=============================================================================
+COMMANDS						    *settable-commands*
+
+For more information about user commands, see |user-commands| and
+|nvim_create_user_command()| for the underlying API.
+
+TABLE STRUCTURE  
+Commands are defined as tables with positional arguments:
+- [1] name (string): Command name (must be capitalized, colon prefix optional)
+- [2] handler (string|function): What gets executed when command is run
+- Additional fields are passed as options to |nvim_create_user_command()|
+
+TYPE PROPERTIES
+>lua
+    {
+        [1] string,              -- name: command name (required, capitalized)
+        [2] string|fun(args),    -- handler: command or function (required)
+        desc = string,           -- Human-readable description
+        force = boolean,         -- Override previous definition (default: true)
+        nargs = string|number,   -- Argument count: '0','1','*','?','+'
+        complete = string,       -- Completion behavior: 'file','buffer','custom'
+        range = string,          -- Range behavior: '','!','%','N'
+        count = boolean,         -- Accept count prefix
+        bang = boolean,          -- Accept ! modifier
+        bar = boolean,           -- Allow | to separate commands
+        register = boolean,      -- Accept optional register
+        buffer = boolean,        -- Buffer-local command
+        keepscript = boolean,    -- Hide definition location in errors
+        preview = function,      -- Preview function for incremental preview
+        addr = string,           -- Address type: 'lines','arguments'
+        custom_args = boolean,   -- Use <f-args> for arguments
+        custom_quoting = boolean, -- Use <q-args> for quoted arguments
+    }
+<
+
+EXAMPLES
+Basic command:
+>lua
+    { 'SayHello', function() vim.notify("Hello there!") end, desc = 'Say hello' }
+<
+
+Command with colon prefix:
+>lua
+    { ':SayHello', function() vim.notify("Hello there!") end, desc = 'Say hello' }
+<
+
+String-based command:
+>lua
+    { 'Make', 'make', desc = 'Run make' }
+<
+
+Command with arguments:
+>lua
+    { 
+        'EchoArgs', 
+        function(args) vim.notify("Args: " .. args.args) end,
+        desc = 'Echo arguments',
+        nargs = '+'
+    }
+<
+
+VALIDATION
+- Duplicate command names will raise an error
+- Command names must be capitalized (enforced by Neovim)
+- Both name and handler are required
+- Colon prefix in name is optional and will be stripped
+
+=============================================================================
+AUTOCMDS						    *settable-autocmds*
+
+For more information about autocommands, see |autocommand| and
+|nvim_create_autocmd()| for the underlying API.
+
+TABLE STRUCTURE
+Autocmds are defined as tables with named fields:
+- events (string|string[]): Event name(s) to trigger on (required)
+- pattern (string|string[]): File pattern(s) to match (default: "*")
+- callback (function): Lua function to execute (mutually exclusive with command)
+- command (string): Vim command to execute (mutually exclusive with callback)
+- group (string): Autocommand group name
+- opts (table): Additional options
+
+TYPE PROPERTIES
+>lua
+    {
+        events = string|string[],    -- Event name(s) (required)
+        pattern = string|string[],   -- File pattern(s) (default: "*")
+        callback = fun(),           -- Lua function to execute
+        command = string,            -- Vim command to execute
+        group = string,              -- Autocommand group name
+        opts = {
+            once = boolean,           -- Execute only once
+            nested = boolean,         -- Allow nested autocommands
+            buffer = number,          -- Buffer number for buffer-local
+            clear = boolean,          -- Clear group before adding
         }
+    }
+<
 
-    Keymap without description:
-        { '<leader>q', ':q<CR>' }
+EXAMPLES
+Basic autocmd:
+>lua
+    { 
+        events = 'BufEnter', 
+        pattern = '*.lua',
+        command = 'setlocal ts=2 sw=2'
+    }
+<
 
-SETTING HOTKEYS
-	Always provide keymaps via the plugin-manager `opts = { ... }` table.
-	Example Lazy.nvim spec:
-		local spec = {
-		  'jemjam/settable.nvim',
-		  opts = {
-			defaults = { keymaps = { silent = true, noremap = true } },
-			keymaps = {
-			  { '<leader>ff', ':Telescope find_files<CR>', desc = 'Find files' },
-			  { '<leader>p', ':Telescope live_grep<CR>', desc = 'Live grep', mode = {'n','v'} },
-			},
-			commands = {
-			  { ':SayHello', function() vim.notify('hello') end, opts = { desc = 'Say hello' } },
-			},
-		  },
-		}
+Lua callback:
+>lua
+    {
+        events = 'BufWritePre',
+        pattern = '*.py',
+        callback = function()
+            vim.lsp.buf.format()
+        end
+    }
+<
 
-NOTES
-	- `setup` accepts either a table or a function returning the table.
-	- Duplicate keymaps (same mode + lhs) or duplicate command/func names will raise an error.
+Multiple events and patterns:
+>lua
+    {
+        events = {'BufWritePre', 'BufReadPost'},
+        pattern = {'*.js', '*.ts'},
+        callback = function() vim.notify('JS file touched') end
+    }
+<
+
+With autocommand group:
+>lua
+    {
+        events = 'TextYankPost',
+        callback = function() vim.highlight.on_yank() end,
+        group = 'highlight_yank'
+    }
+<
+
+VALIDATION
+- Either callback or command must be provided (but not both)
+- Events field is required
+- Pattern defaults to "*" if not specified
+
+=============================================================================
+NOTES							       *settable-notes*
+
+- `setup` accepts either a table or a function returning the table
+- Duplicate keymaps (same mode + lhs) will raise an error
+- Duplicate command names will raise an error
+- All entities support the full range of underlying vim API options
 
 FILES
 	- Lua module: `lua/settable/init.lua`

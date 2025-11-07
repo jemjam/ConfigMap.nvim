@@ -1,3 +1,8 @@
 settable	settable.txt	/*settable*
+settable-autocmds	settable.txt	/*settable-autocmds*
+settable-commands	settable.txt	/*settable-commands*
+settable-configuration	settable.txt	/*settable-configuration*
+settable-installation	settable.txt	/*settable-installation*
 settable-keymaps	settable.txt	/*settable-keymaps*
+settable-notes	settable.txt	/*settable-notes*
 settable.nvim	settable.txt	/*settable.nvim*
