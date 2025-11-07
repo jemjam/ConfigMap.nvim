@@ -1,0 +1,3 @@
+[tasks.test]
+description = "Run the unit tests"
+run = 'nvim --headless -c "PlenaryBustedDirectory tests/" -c "qa"'
