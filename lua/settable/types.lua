@@ -15,23 +15,9 @@
 ---@field nowait boolean? - Prevents waiting for further key presses in multi-key sequences.
 ---@field script boolean? - Allows for script mappings count.
 
----@class UserCommandFnArgs
----@field name string Command name
----@field args string The args passed to the command, if any
----@field fargs table The args split by unescaped whitespace
----@field nargs string Number of arguments
----@field bang boolean "true" if the command was executed with a ! modifier
----@field line1 number The starting line of the command range
----@field line2 number The final line of the command range
----@field range number The number of items in the command range: 0, 1, or 2
----@field count number Any count supplied
----@field reg string The optional register, if specified
----@field mods string Command modifiers, if any
----@field smods table Command modifiers in a structured format
-
 ---@class UserCommandOpts See the `opts` used: "h nvim_create_user_command()"
 ---@field [1] string Command - The name/label for this command. User commands MUST be capitalized. You MAY optionally include a ":" (colon) prefix.
----@field [2] string|fun(UserCommandFnArgs) Replacement command to execute when this user command is executed.
+---@field [2] string|fun(any) Replacement command to execute when this user command is executed.
 ---@field desc string? - A human-readable description for the command.
 ---@field force boolean? - Override any previous definition (defaults true)
 ---@field nargs string|number? - Number of arguments allowed ('0', '1', '*', '?', or '+').
