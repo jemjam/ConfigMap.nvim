@@ -19,6 +19,7 @@ function M.apply_commands(list)
 			error("settable: command '" .. name .. "' requires a handler (string or function)")
 		end
 
+		-- Command names can optionally include the `:` prefix out of convention
 		name = name:gsub("^:", "")
 		if seen[name] then
 			error("settable: duplicate command name: " .. name)
