@@ -1,10 +1,10 @@
-*settable.nvim*	Simple helper for loading user commands, keymaps, etc
+*settable.nvim*	     Table to define user keymaps, commands, and autocommands
 
 =============================================================================
 
 *settable*
 
-settable.nvim	Quick loader for keymaps, commands, and autocmds
+settable.nvim	Load user keymaps, commands, and autocmds in one neat table.
 
 NAME
 	settable - lightweight declarative loader for Neovim config items
